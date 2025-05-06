@@ -16,15 +16,19 @@ solar yield, maximum power output, charge stages, and more.
 - Install dependencies.
 
 
-    pip3 install -r requirements.txt
+            pip3 install -r requirements.txt
+
 
     or
 
-    uv pip3 install -r requirements.txt
+
+            uv pip3 install -r requirements.txt
+
 
     or
 
-    uv add -r requirements
+
+            uv add -r requirements
 
 
 
@@ -35,7 +39,7 @@ solar yield, maximum power output, charge stages, and more.
 2. **Run the Script**:
 
    
-   python3 main.py
+           python3 main.py
   
 
 3. **Interact with the GUI**:
