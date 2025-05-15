@@ -1,0 +1,17 @@
+Help on module solar_vis_logging:
+
+NAME
+    solar_vis_logging - app_logging.py--set up the logging for client.py.
+
+FUNCTIONS
+    solar_vis_log(name: str) -> logging.Logger
+        Set-up the logging object.
+
+DATA
+    log_file = 'Victron/.solar_vis.log'
+    parent_dir = 'Victron'
+
+FILE
+    Victron/solar_vis_utils/solar_vis_logging.py
+
+

@@ -1,0 +1,110 @@
+Help on module victron_data_visualization:
+
+NAME
+    victron_data_visualization
+
+DESCRIPTION
+    This module retrieves and plots Victron solar history data
+    from the victron SolarHistory.csv
+
+CLASSES
+    builtins.object
+        PlotData
+
+    class PlotData(builtins.object)
+     |  PlotData(day, data, bar_width)
+     |
+     |  Plots solar history.
+     |
+     |  Methods defined here:
+     |
+     |  __init__(self, day, data, bar_width)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |
+     |  plot_absorption_charge(self) -> None
+     |      Plots the absorption charge stage in minutes.
+     |
+     |  plot_battery_max_voltage(self) -> None
+     |      Plots the maximum voltage of the battery bank.
+     |
+     |  plot_battery_min_voltage(self) -> None
+     |      Plots the minimum voltage of the battery bank.
+     |
+     |  plot_bulk_charge(self) -> None
+     |      Plots the bulk charge stage in minutes.
+     |
+     |  plot_charge_stages(self) -> None
+     |      Plots all charge stages in minutes.
+     |
+     |  plot_charger_load_consump(self) -> None
+     |      Plots the charger load consumption in watthours.
+     |
+     |  plot_daylight(self) -> None
+     |      Plots total time of solar energy produced.
+     |
+     |  plot_float_charge(self) -> None
+     |      Plots the float charge stage in minutes.
+     |
+     |  plot_max_power(self) -> None
+     |      Plots the maximum power of the PV in watts.
+     |
+     |  plot_pv_max_voltage(self) -> None
+     |      Plots the maximum voltage of the PV panel(s).
+     |
+     |  plot_solar_yield(self) -> None
+     |      Plots the yield produced in watthours.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  __weakref__
+     |      list of weak references to the object
+
+FUNCTIONS
+    get_absorption_charge(solar_data: dict) -> list
+        Returns the time of the absorption charge stage.
+
+    get_battery_max_voltage(solar_data: dict) -> list
+        Returns the maximum battery voltage.
+
+    get_battery_min_voltage(solar_data: dict) -> list
+        Returns the minimum battery voltage.
+
+    get_bulk_charge(solar_data: dict = None) -> list
+        Returns the time of the bulk charge stage.
+
+    get_charger_load_consump(solar_data: dict) -> list
+        Returns charger load consumption.
+
+    get_csv_data() -> dict
+        Returns victron charge data history.
+
+    get_daylight(solar_data: dict) -> list
+        Returns total time of solar production.
+
+    get_float_charge(solar_data: dict) -> list
+        Returns the time of the float charge stage.
+
+    get_max_power(solar_data: dict) -> list
+        Returns the maximum power of the solar panels produced.
+
+    get_pv_max_voltage(solar_data: dict) -> list
+        Returns the maximum voltage of the solar panels.
+
+    get_solar_yield(solar_data: dict) -> list
+        Returns solar yield
+
+    main() -> None
+        When the module is executed on it's own,
+        display a chart of all plots.
+
+DATA
+    logger = <Logger victron_data_visualization (DEBUG)>
+
+FILE
+    Victron/solar_vis_utils/victron_data_visualization.py
+
+

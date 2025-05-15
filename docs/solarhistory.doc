@@ -1,0 +1,22 @@
+Help on module solar_history:
+
+NAME
+    solar_history
+
+DESCRIPTION
+    A module that extracts data from the solarhistory.csv file and
+      and stores that data in a dictionary.
+
+FUNCTIONS
+    victron_charger_history() -> dict
+        Extract data and store in the "solar_data" dictionary.
+
+DATA
+    csv = 'Victron/solarhistory.csv'
+    logger = <Logger solar_history (DEBUG)>
+    parent_dir = 'Victron'
+
+FILE
+    solar_history.py
+
+

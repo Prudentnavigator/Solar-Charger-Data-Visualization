@@ -1,0 +1,31 @@
+Help on module csv_due:
+
+NAME
+    csv_due
+
+DESCRIPTION
+    This module checks the days passed between the last SolarHistory.csv data that
+      was added, and today. As the Victron Charger only stores data up to 29 days,
+      it let's the user know if more data needs to be added so as to not have data
+      gaps.
+
+FUNCTIONS
+    check_last_update() -> int | dict
+        Checks for how many days passed since the last
+        time data was added.
+
+    time_to_add_csv() -> bool
+        This function returns, if days passed exceed 20 days (csv_alert = True)
+          or if days passed exceed 25 days (csv_urgent =True), otherwise both
+          variables return False.
+
+DATA
+    csv = 'Victron/solarhistory.csv'
+    file_size = 13006
+    logger = <Logger csv_due (DEBUG)>
+    parent_dir = 'Victron'
+
+FILE
+    csv_due.py
+
+

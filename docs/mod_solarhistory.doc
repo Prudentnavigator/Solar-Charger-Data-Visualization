@@ -1,0 +1,32 @@
+Help on module mod_solarhistory:
+
+NAME
+    mod_solarhistory
+
+DESCRIPTION
+    Module to modify a newly added Victron SolarHistory.csv and merge
+      it with the solarhistory.csv.
+
+FUNCTIONS
+    add_solarhistory_csv(add_csv: str) -> None
+        Add a new csv file to the existing solarhistory data
+
+    alter_solarhistory_csv(add_csv: str) -> None
+        Read the SolarHistory.csv and remove the 'Days ago' column.
+
+    archive_csv(add_csv: str) -> None
+        Creates a backup of the new CSV file.
+
+    merge_solarhistory_csv(csv: str, tmp_csv: str) -> None
+        Combine the newly SolarHistory.csv with the previous csv.
+
+DATA
+    TMP_CSV = './History/tmp.csv'
+    WRITE_CSV = 'solarhistory.csv'
+    logger = <Logger mod_solarhistory (DEBUG)>
+    suffix = '05142025'
+
+FILE
+    mod_solarhistory.py
+
+
