@@ -18,6 +18,7 @@ import datetime as dt
 from matplotlib import pyplot as plt
 from matplotlib import dates as mdates
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from ui.custom_navtoolbar import CustomNavigationToolbar
 import solar_vis_utils.victron_data_visualization as vdv
 from solar_vis_utils.victron_data_visualization import PlotData
 from solar_vis_utils import csv_due
@@ -31,6 +32,7 @@ class SolarPlotter:
     ''' GUI solar data plotter class. '''
 
     win = None
+    toolbar = None
 
     def __init__(self, plot, bar_width):
         self.plot = plot
@@ -48,7 +50,8 @@ class SolarPlotter:
                        "charger_load_consump": None,
                        "clear_plot_button": None,
                        "plot_data_canvas": None,
-                       "add_csv_button": None
+                       "add_csv_button": None,
+                       "daily_consumption_label": None
                        }
 
         self.chart = {
@@ -63,14 +66,16 @@ class SolarPlotter:
         ''' Method to create the GUI'''
 
         SolarPlotter.win = tk.Tk()
-        SolarPlotter.win.title('Solar Charger Data Visualization')
-        SolarPlotter.win.config(bg='#3771a9')
+        self.win.title('Solar Charger Data Visualization')
+        self.win.config(bg='#3771a9')
 
-        SolarPlotter.win.resizable(1, 1)
-        SolarPlotter.win.columnconfigure(index=8, weight=1)
-        SolarPlotter.win.rowconfigure(index=2, weight=3)
+        self.win.resizable(1, 1)
+        self.win.columnconfigure(index=10, weight=1)
+        self.win.rowconfigure(index=2, weight=3)
 
         self.gui_buttons()
+
+        self.gui_labels()
 
         self.data_canvas()
 
@@ -79,16 +84,16 @@ class SolarPlotter:
         self.draw_plot()
 
         # Function to be called when user chooses to close the window.
-        SolarPlotter.win.protocol("WM_DELETE_WINDOW", close_app)
+        self.win.protocol("WM_DELETE_WINDOW", close_app)
 
         logger.info("[GUI]: has been created...")
 
-        SolarPlotter.win.mainloop()
+        self.win.mainloop()
 
-    def gui_buttons(self):
+    def gui_buttons(self) -> None:
         ''' Initiate buttons '''
 
-        bt_1 = tk.Button(SolarPlotter.win,
+        bt_1 = tk.Button(self.win,
                          state="normal",
                          text="PV yield",
                          activebackground="#3771a9",
@@ -100,7 +105,7 @@ class SolarPlotter:
 
         self.widget["yield_button"] = bt_1
 
-        bt_2 = tk.Button(SolarPlotter.win,
+        bt_2 = tk.Button(self.win,
                          state="normal",
                          text="Daylight",
                          activebackground="#3771a9",
@@ -112,7 +117,7 @@ class SolarPlotter:
 
         self.widget["daylight_button"] = bt_2
 
-        bt_3 = tk.Button(SolarPlotter.win,
+        bt_3 = tk.Button(self.win,
                          state="normal",
                          text="PV max power",
                          activebackground="#3771a9",
@@ -124,7 +129,7 @@ class SolarPlotter:
 
         self.widget["pv_max_power_button"] = bt_3
 
-        bt_4 = tk.Button(SolarPlotter.win,
+        bt_4 = tk.Button(self.win,
                          state="normal",
                          text="Charge stages",
                          activebackground="#3771a9",
@@ -136,7 +141,7 @@ class SolarPlotter:
 
         self.widget["charge_stages_button"] = bt_4
 
-        bt_5 = tk.Button(SolarPlotter.win,
+        bt_5 = tk.Button(self.win,
                          state="normal",
                          text="PV max voltage",
                          activebackground="#3771a9",
@@ -148,7 +153,7 @@ class SolarPlotter:
 
         self.widget["pv_max_voltage_button"] = bt_5
 
-        bt_6 = tk.Button(SolarPlotter.win,
+        bt_6 = tk.Button(self.win,
                          state="normal",
                          text="Battery max voltage",
                          activebackground="#3771a9",
@@ -160,7 +165,7 @@ class SolarPlotter:
 
         self.widget["battery_max_voltage_button"] = bt_6
 
-        bt_7 = tk.Button(SolarPlotter.win,
+        bt_7 = tk.Button(self.win,
                          state="normal",
                          text="Battery min voltage",
                          activebackground="#3771a9",
@@ -172,7 +177,7 @@ class SolarPlotter:
 
         self.widget["battery_min_voltage_button"] = bt_7
 
-        bt_8 = tk.Button(SolarPlotter.win,
+        bt_8 = tk.Button(self.win,
                          state="normal",
                          text='Charger load consumption',
                          activebackground="#3771a9",
@@ -183,7 +188,7 @@ class SolarPlotter:
 
         self.widget["charger_load_consump"] = bt_8
 
-        bt_9 = tk.Button(SolarPlotter.win,
+        bt_9 = tk.Button(self.win,
                          state="normal",
                          text="clear plot",
                          activebackground="#3771a9",
@@ -195,7 +200,7 @@ class SolarPlotter:
 
         self.widget["clear_plot_button"] = bt_9
 
-        bt_10 = tk.Button(SolarPlotter.win,
+        bt_10 = tk.Button(self.win,
                           state="normal",
                           text='add data',
                           activebackground="#3771a9",
@@ -206,79 +211,101 @@ class SolarPlotter:
 
         self.widget["add_csv_button"] = bt_10
 
+    def gui_labels(self) -> None:
+        ''' Creates GUI labels. '''
+
+        s_yield = vdv.get_solar_yield(vdv.get_csv_data())
+        daily_consumption_average = round(sum(s_yield) / len(s_yield))
+        average = f"Average daily consumption: {daily_consumption_average}Wh"
+
+        self.widget["daily_consumption_label"] = tk.Label(self.win,
+                                                          bg="#3771a9",
+                                                          font=20,
+                                                          text=average)
+
     def data_canvas(self):
         ''' Place matplotlib background into a canvas. '''
 
         self.chart["fig"] = plt.figure()
         self.chart["ax"] = plt.axes()
         self.chart["canvas"] = FigureCanvasTkAgg(figure=self.chart["fig"],
-                                                 master=SolarPlotter.win)
+                                                 master=self.win)
 
         self.widget["plot_data_canvas"] = self.chart["canvas"].get_tk_widget()
 
     def gui_layout(self):
         ''' Layout widgets. '''
 
-        self.widget["daylight_button"].grid(row=1,
-                                            column=1,
-                                            padx=15,
-                                            pady=5)
+        self.widget["daylight_button"].grid(row=0,
+                                            column=0,
+                                            padx=25,
+                                            pady=10,
+                                            sticky="E")
 
-        self.widget["yield_button"].grid(row=1,
-                                         column=2,
+        self.widget["yield_button"].grid(row=0,
+                                         column=1,
                                          sticky='WE',
                                          padx=15,
-                                         pady=5)
+                                         pady=10)
 
-        self.widget["pv_max_power_button"].grid(row=1,
-                                                column=3,
+        self.widget["pv_max_power_button"].grid(row=0,
+                                                column=2,
                                                 padx=15,
-                                                pady=5)
+                                                pady=10)
 
-        self.widget["charge_stages_button"].grid(row=1,
-                                                 column=4,
+        self.widget["charge_stages_button"].grid(row=0,
+                                                 column=3,
                                                  padx=15,
-                                                 pady=5)
+                                                 pady=10)
 
-        self.widget["pv_max_voltage_button"].grid(row=1,
-                                                  column=5,
+        self.widget["pv_max_voltage_button"].grid(row=0,
+                                                  column=4,
                                                   padx=15,
-                                                  pady=5)
+                                                  pady=10)
 
-        self.widget["battery_max_voltage_button"].grid(row=1,
+        self.widget["battery_max_voltage_button"].grid(row=0,
+                                                       column=5,
+                                                       padx=15,
+                                                       pady=10)
+
+        self.widget["battery_min_voltage_button"].grid(row=0,
                                                        column=6,
                                                        padx=15,
-                                                       pady=5)
+                                                       pady=10)
 
-        self.widget["battery_min_voltage_button"].grid(row=1,
-                                                       column=7,
-                                                       padx=15,
-                                                       pady=5)
-
-        self.widget["charger_load_consump"].grid(row=1,
-                                                 column=8,
+        self.widget["charger_load_consump"].grid(row=0,
+                                                 column=7,
                                                  sticky="W",
                                                  padx=15,
-                                                 pady=5)
+                                                 pady=10)
 
-        self.widget["clear_plot_button"].grid(row=1,
-                                              column=9,
+        self.widget["clear_plot_button"].grid(row=0,
+                                              column=13,
                                               padx=40,
-                                              pady=10)
+                                              pady=10,
+                                              sticky="E")
 
-        self.widget["add_csv_button"].grid(row=1,
-                                           column=10,
-                                           padx=40,
-                                           pady=10)
+        self.widget["add_csv_button"].grid(row=0,
+                                           column=14,
+                                           padx=20,
+                                           pady=10,
+                                           sticky="E")
 
-        self.widget["plot_data_canvas"].grid(row=2,
-                                             columnspan=11,
+        self.widget["plot_data_canvas"].grid(row=1,
+                                             column=0,
+                                             columnspan=15,
                                              sticky="NSWE",
-                                             rowspan=5,
-                                             padx=15,
-                                             pady=15)
+                                             rowspan=6,
+                                             padx=10,
+                                             pady=5)
 
-    def draw_plot(self):
+        self.widget["daily_consumption_label"].grid(row=7,
+                                                    column=0,
+                                                    columnspan=2,
+                                                    padx=20,
+                                                    pady=10)
+
+    def draw_plot(self) -> None:
         ''' Plot the solar data. '''
 
         style = plt.style.available[4]
@@ -305,7 +332,37 @@ class SolarPlotter:
         plt.legend(loc='upper right')
         self.chart["canvas"].draw()
 
-    def clear_plot(self):
+        self.chart["canvas"].get_tk_widget().grid(row=1, column=0)
+
+        self.create_nav_toolbar()
+
+    def create_nav_toolbar(self) -> None:
+        '''
+        Creates and displays in the GUI a custom navigation toolbar.
+        '''
+
+        self.toolbar = CustomNavigationToolbar(self.chart["canvas"],
+                                               self.win,
+                                               pack_toolbar=False)
+
+        self.toolbar.grid(row=7,
+                          column=4,
+                          columnspan=12,
+                          sticky="NSEW",
+                          pady=5)
+
+        self.toolbar.configure(borderwidth=5,
+                               background="#3771a9",
+                               relief="flat",
+                               bd=0,
+                               padx=50,
+                               pady=2)
+
+        self.toolbar.update()
+
+        self.toolbar.set_message("Welcome!")
+
+    def clear_plot(self) -> None:
         ''' Clear the chart and reset the buttons. '''
 
         self.widget["daylight_button"].config(state="normal",
@@ -350,10 +407,11 @@ class SolarPlotter:
 
         self.chart["ax"].clear()
         self.draw_plot()
+        self.toolbar.update()
 
         logger.debug("[GUI]: chart has been cleared...")
 
-    def add_csv(self):
+    def add_csv(self) -> None:
         ''' Add new solar data to solarhistory.csv. '''
 
         data_file = filedialog.askopenfilename()
@@ -541,11 +599,6 @@ def main():
     bar_width = 0.5
 
     plots = PlotData(day, data, bar_width)
-
-    s_yield = vdv.get_solar_yield(vdv.get_csv_data())
-    total_yield = sum(s_yield)
-    total = f'Total Yield {total_yield / 1000} Kwh'
-    plt.xlabel(total, size=20, color='blue')
 
     SolarPlotter(plots, bar_width)
 

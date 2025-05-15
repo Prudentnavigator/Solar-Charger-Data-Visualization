@@ -1,10 +1,12 @@
 # <ins>***Victron Solar-Charger Data Visualization***</ins>
 
 ## ***Overview***
-This app is designed to visualize various aspects of solar data (i.e; Victron Solar-Charger MPPT 100|50)
-from the CSV file of the Victron Connect app.
-It provides interactive plots, allowing users to explore different metrics such as daylight hours,
-solar yield, maximum power output, charge stages, and more.
+
+This app is designed to visualize various aspects of solar data
+(i.e; Victron Solar-Charger MPPT 100|50)
+from the CSV file of the Victron Connect App.
+It provides interactive plots, allowing users to explore different metrics,
+facilitating monitoring, troubleshooting or help expand a Solar installation.
 
 
 ![startup screen](/ScreenShots/app_gui.png)

@@ -91,7 +91,7 @@ class PlotData:
                 get_float_charge(self.data),
                 width=self.bar_width,
                 bottom=bulk_absortion,
-                color='white',
+                color='lightgreen',
                 label='Float charge [min]')
 
     def plot_charge_stages(self) -> None:
